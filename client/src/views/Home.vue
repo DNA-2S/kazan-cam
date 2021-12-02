@@ -1,36 +1,46 @@
 <template>
-  <div class="rt-home">
-    <img :src="`data:image/jpg;base64,${img}`" alt="stream" />
+  <div class="k-home">
+    <k-map :cams="camsJson" v-if="isLoaded"></k-map>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
-import { useWebSocket } from "@vueuse/core";
+import { defineComponent, onMounted, ref } from "vue";
+import KMap from "@/components/KMap.vue";
+import camsJson from "@/data/cams.json";
 
 export default defineComponent({
   name: "Home",
-  components: {},
+  components: { KMap },
   setup() {
-    const img = ref("");
+    const isLoaded = ref(false);
 
-    useWebSocket(`ws://${window.location.host}${window.location.pathname}ws`, {
-      onConnected(ws) {
-        ws.send("1");
-      },
-      onMessage(ws, e) {
-        img.value = e.data;
-        ws.send("1");
-      },
-      onError(ws, e) {
-        console.log(e);
-        ws.send("1");
-      },
+    onMounted(() => {
+      console.log(camsJson);
+
+      let ymapsScript = document.createElement("script");
+      ymapsScript.setAttribute(
+        "src",
+        `https://api-maps.yandex.ru/2.1/?apikey=${process.env.VUE_APP_MAP_KEY}&lang=ru_RU`
+      );
+      document.head.appendChild(ymapsScript);
+
+      setTimeout(() => (isLoaded.value = true), 300);
     });
 
     return {
-      img,
+      isLoaded,
+      camsJson,
     };
   },
 });
 </script>
+
+<style lang="scss" scoped>
+.k-home {
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+</style>
