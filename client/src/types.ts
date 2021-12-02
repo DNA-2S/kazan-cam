@@ -4,3 +4,9 @@ export interface Camera {
   dumpster?: boolean;
   ["parking-area"]?: boolean;
 }
+
+export enum ViewType {
+  dumpster,
+  ["parking-area"],
+  cams
+}

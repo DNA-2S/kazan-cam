@@ -1,6 +1,10 @@
 <template>
   <div id="map" class="q-map"></div>
-  <k-garbage-icon :id="0"></k-garbage-icon>
+  <template :key="cam.id" v-for="cam in cams">
+    <k-garbage-icon :id="cam.id" v-if="text === '0'"></k-garbage-icon>
+    <k-camera-icon :id="cam.id" v-else-if="text === '1'"></k-camera-icon>
+    <k-car-icon :id="cam.id" v-else-if="text === '2'"></k-car-icon>
+  </template>
   <div class="test">
     <input v-model="text" type="text" />
   </div>
@@ -10,10 +14,12 @@
 import { defineComponent, PropType, ref } from "vue";
 import { Camera } from "@/types";
 import KGarbageIcon from "@/components/KGarbageIcon.vue";
+import KCameraIcon from "@/components/KCameraIcon.vue";
+import KCarIcon from "@/components/KCarIcon.vue";
 
 export default defineComponent({
   name: "KMap",
-  components: { KGarbageIcon },
+  components: { KCarIcon, KCameraIcon, KGarbageIcon },
   emits: ["select"],
   props: {
     cams: {
@@ -24,7 +30,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const ymaps = (window as any).ymaps;
     let myMap: any = null;
-    const text = ref("");
+    const text = ref("1");
 
     const init = function () {
       myMap = new ymaps.Map(
@@ -48,7 +54,7 @@ export default defineComponent({
             const geoObject = res.geoObjects.get(0);
 
             if (geoObject) {
-              addGeoPoint(geoObject, item.address);
+              addGeoPoint(geoObject, item.address, item.id);
             } else {
               console.log(index);
             }
@@ -56,11 +62,11 @@ export default defineComponent({
       });
     };
 
-    const addGeoPoint = (geoObject: any, label: string) => {
+    const addGeoPoint = (geoObject: any, label: string, id: number) => {
       const MyIconLayout = ymaps.templateLayoutFactory.createClass(
         [
           '<svg width="92" height="92" style="position: absolute; top: -23px; left: -23px;">',
-          '<use href="#sym0"/>',
+          `<use href="#sym${id}"/>`,
           "</svg>",
         ].join("")
       );
