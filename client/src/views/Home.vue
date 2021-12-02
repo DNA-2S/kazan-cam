@@ -16,8 +16,6 @@ export default defineComponent({
     const isLoaded = ref(false);
 
     onMounted(() => {
-      console.log(camsJson);
-
       let ymapsScript = document.createElement("script");
       ymapsScript.setAttribute(
         "src",

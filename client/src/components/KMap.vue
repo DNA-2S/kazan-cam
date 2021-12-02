@@ -1,13 +1,19 @@
 <template>
   <div id="map" class="q-map"></div>
+  <k-garbage-icon :id="0"></k-garbage-icon>
+  <div class="test">
+    <input v-model="text" type="text" />
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
+import { defineComponent, PropType, ref } from "vue";
 import { Camera } from "@/types";
+import KGarbageIcon from "@/components/KGarbageIcon.vue";
 
 export default defineComponent({
   name: "KMap",
+  components: { KGarbageIcon },
   emits: ["select"],
   props: {
     cams: {
@@ -15,9 +21,13 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(_, { emit }) {
+  setup(props, { emit }) {
+    const ymaps = (window as any).ymaps;
+    let myMap: any = null;
+    const text = ref("");
+
     const init = function () {
-      const myMap = new (window as any).ymaps.Map(
+      myMap = new ymaps.Map(
         "map",
         {
           center: [55.796, 49.106],
@@ -29,28 +39,57 @@ export default defineComponent({
         }
       );
 
-      (window as any).ymaps
-        .geocode(myMap.getCenter(), {
-          results: 1,
-        })
-        .then(function (res: any) {
-          res.geoObjects.each((geoObject: any) => {
-            if (geoObject.getPremise()) {
-              geoObject.options.set("preset", "islands#redCircleIcon");
-              myMap.geoObjects.add(geoObject);
-              geoObject.events.add("click", function (event: any) {
-                let geoObject = event.get("target");
-                emit("select", {
-                  name: geoObject.getPremise(),
-                  coords: geoObject.geometry.getCoordinates(),
-                });
-              });
+      props.cams.forEach((item, index) => {
+        ymaps
+          .geocode(item.address, {
+            results: 1,
+          })
+          .then((res: any) => {
+            const geoObject = res.geoObjects.get(0);
+
+            if (geoObject) {
+              addGeoPoint(geoObject, item.address);
+            } else {
+              console.log(index);
             }
           });
-        });
+      });
     };
 
-    (window as any).ymaps.ready(init);
+    const addGeoPoint = (geoObject: any, label: string) => {
+      const MyIconLayout = ymaps.templateLayoutFactory.createClass(
+        [
+          '<svg width="92" height="92" style="position: absolute; top: -23px; left: -23px;">',
+          '<use href="#sym0"/>',
+          "</svg>",
+        ].join("")
+      );
+
+      const myPlacemark = new ymaps.Placemark(
+        geoObject.geometry.getCoordinates(),
+        {
+          hintContent: label,
+          balloonContent: label,
+          iconContent: "XXX",
+        },
+        {
+          iconLayout: MyIconLayout,
+          iconShape: {
+            type: "Circle",
+            coordinates: [0, 0],
+            radius: 23,
+          },
+        }
+      );
+
+      myMap.geoObjects.add(myPlacemark);
+    };
+
+    ymaps.ready(init);
+
+    return {
+      text,
+    };
   },
 });
 </script>
@@ -59,5 +98,11 @@ export default defineComponent({
 .q-map {
   width: 100%;
   height: 100%;
+}
+
+.test {
+  position: absolute;
+  top: 100px;
+  left: 100px;
 }
 </style>
