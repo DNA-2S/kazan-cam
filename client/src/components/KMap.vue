@@ -4,7 +4,6 @@
     <k-garbage-icon
       :id="cam.id"
       v-if="viewType === ViewType.DUMPSTER"
-      color="#FFB90B"
     ></k-garbage-icon>
     <k-camera-icon
       :id="cam.id"
@@ -13,6 +12,7 @@
     ></k-camera-icon>
     <k-car-icon
       :id="cam.id"
+      color="#FFB90B"
       v-else-if="viewType === ViewType['PARKING-AREA']"
     ></k-car-icon>
   </template>

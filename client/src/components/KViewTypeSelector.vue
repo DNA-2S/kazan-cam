@@ -59,9 +59,9 @@ export default defineComponent({
       if (props.viewType === ViewType.CAMS) {
         return "#6E4CF5";
       } else if (props.viewType === ViewType.DUMPSTER) {
-        return "#FFB90B";
-      } else {
         return "#7DC33A";
+      } else {
+        return "#FFB90B";
       }
     });
 
