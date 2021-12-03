@@ -88,6 +88,12 @@ export default defineComponent({
       (value) => {
         if (value["camId"]) {
           detailsCam.value = camById(parseInt(value["camId"][0] || ""));
+
+          log({
+            timestamp: Date.now(),
+            message: "Запрашиваются данные",
+            cam: detailsCam.value,
+          });
         }
       }
     );
