@@ -4,5 +4,4 @@ setup:
       as: REDIS
 build:
   docker:
-    web: client/Dockerfile
-    worker: server/Dockerfile
+    web: server/Dockerfile
