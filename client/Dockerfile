@@ -5,7 +5,8 @@ RUN yarn
 COPY . ./
 RUN yarn build
 
-FROM nginx:1.12-alpine
+FROM nginx
 COPY --from=build-deps /usr/src/app/dist /usr/share/nginx/html
-EXPOSE 80
+ENV NGINX_PORT=8080
+EXPOSE 8888
 CMD ["sudo", "nginx", "-g", "daemon off;"]

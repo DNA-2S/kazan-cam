@@ -1,6 +1,7 @@
 import base64
 import time
 from multiprocessing import Pool
+import os
 
 import redis
 from tornado import websocket, web, ioloop
@@ -36,7 +37,11 @@ class SocketHandler(websocket.WebSocketHandler):
         """ Initialize the Redis store and framerate monitor. """
 
         super().__init__(*args, **kwargs)
-        self._store = redis.Redis()
+        if "REDIS_URL" in os.environ:
+            self._store = redis.Redis().from_url(os.environ['REDIS_URL'])
+        else:
+            self._store = redis.Redis()
+
         self._prev_image_id = None
 
     def check_origin(self, origin):
