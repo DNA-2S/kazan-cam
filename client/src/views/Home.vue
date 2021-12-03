@@ -10,8 +10,7 @@
         <k-item-card
           v-for="item in filteredData"
           :key="item.id"
-          :name="item.address"
-          :desc="item.address"
+          :camera="item"
           :active="selectedCam === item.id"
           @click="selectedCam = item.id"
         />

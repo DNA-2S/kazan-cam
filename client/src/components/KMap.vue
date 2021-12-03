@@ -28,7 +28,7 @@ import KCarIcon from "@/components/KCarIcon.vue";
 export default defineComponent({
   name: "KMap",
   components: { KCarIcon, KCameraIcon, KGarbageIcon },
-  emits: ["select"],
+  emits: ["update:selectCam"],
   props: {
     cams: {
       type: Object as PropType<Camera[]>,
@@ -73,6 +73,11 @@ export default defineComponent({
         goToPlacemarkById(value);
       }
     );
+
+    const localSelectCam = computed({
+      get: () => props.selectCam,
+      set: (value) => emit("update:selectCam", value),
+    });
 
     watch(
       () => camsIds.value,
@@ -157,6 +162,7 @@ export default defineComponent({
     ymaps.ready(init);
 
     return {
+      localSelectCam,
       ViewType,
     };
   },
