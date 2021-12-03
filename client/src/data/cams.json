@@ -5,7 +5,8 @@
     "dumpster": true,
     "comment": "ТКО",
     "city": "Альметьевск",
-    "name": "Белоглазова 131"
+    "name": "Белоглазова 131",
+   "containers": [false, false]
   },
   {
     "address": "г. Альметьевск Белоглазова 151",
@@ -13,7 +14,8 @@
     "dumpster": true,
     "comment": "ТКО",
     "city": "Альметьевск",
-    "name": "Белоглазова 151"
+    "name": "Белоглазова 151",
+   "containers": [false, false, true, false, false]
   },
   {
     "address": "г. Альметьевск Джалиля 15",
@@ -28,7 +30,8 @@
     "dumpster": true,
     "comment": "ТКО",
     "city": "Альметьевск",
-    "name": "Гафиатуллина 29Б"
+    "name": "Гафиатуллина 29Б",
+   "containers": [true, true]
   },
   {
     "address": "г. Альметьевск Гафиатуллина 39",
@@ -36,7 +39,8 @@
     "dumpster": true,
     "comment": "ТКО",
     "city": "Альметьевск",
-    "name": "Гафиатуллина 39"
+    "name": "Гафиатуллина 39",
+   "containers": [false, true]
   },
   {
     "address": "г. Альметьевск Гафиатуллина 45",
@@ -45,7 +49,8 @@
     "parking-area": true,
     "comment": "ТКО",
     "city": "Альметьевск",
-    "name": "Гафиатуллина 45"
+    "name": "Гафиатуллина 45",
+   "containers": [false, false, false]
   },
   {
     "address": "г. Альметьевск Гафиатуллина 47",
@@ -53,7 +58,8 @@
     "dumpster": true,
     "comment": "ТКО",
     "city": "Альметьевск",
-    "name": "Гафиатуллина 47"
+    "name": "Гафиатуллина 47",
+   "containers": [false]
   },
   {
     "address": "г. Альметьевск Гафиатуллина 47",
@@ -61,7 +67,8 @@
     "dumpster": true,
     "comment": "ТКО",
     "city": "Альметьевск",
-    "name": "Гафиатуллина 47"
+    "name": "Гафиатуллина 47",
+   "containers": [false, false]
   },
   {
     "address": "г. Альметьевск Гафиатуллина 51Б",
@@ -84,7 +91,8 @@
     "dumpster": true,
     "comment": "ТКО",
     "city": "Альметьевск",
-    "name": "Ленина 66"
+    "name": "Ленина 66",
+   "containers": [false, false, false]
   },
   {
     "address": "г. Альметьевск Ленина 90",
@@ -92,7 +100,8 @@
     "dumpster": true,
     "comment": "ТКО",
     "city": "Альметьевск",
-    "name": "Ленина 90"
+    "name": "Ленина 90",
+   "containers": [false, false, false, false]
   },
   {
     "address": "г. Альметьевск Шевченко 80",
@@ -100,7 +109,8 @@
     "dumpster": true,
     "comment": "ТКО",
     "city": "Альметьевск",
-    "name": "Шевченко 80"
+    "name": "Шевченко 80",
+   "containers": [false, false, false, false, true, false, true]
   },
   {
     "address": "г. Альметьевск Строителей 20А",
@@ -115,7 +125,8 @@
     "dumpster": true,
     "comment": "ТКО",
     "city": "Альметьевск",
-    "name": "Строителей 20Б"
+    "name": "Строителей 20Б",
+   "containers": [false, true]
   },
   {
     "address": "г. Альметьевск Строителей 20",
@@ -123,7 +134,8 @@
     "dumpster": true,
     "comment": "ТКО",
     "city": "Альметьевск",
-    "name": "Строителей 20"
+    "name": "Строителей 20",
+   "containers": [false, false, false]
   },
   {
     "address": "г. Казань Блюхера 79",

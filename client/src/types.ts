@@ -7,6 +7,7 @@ export interface Camera {
   city?: string;
   name?: string;
   value?: number;
+  containers?: boolean[];
 }
 
 export enum ViewType {
