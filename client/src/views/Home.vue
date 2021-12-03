@@ -20,6 +20,9 @@
           />
         </div>
       </template>
+      <template v-else>
+        <k-camera-info :cam="detailsCam" />
+      </template>
     </aside>
     <main class="k-map-container">
       <div class="k-map-container__selector">
@@ -47,10 +50,11 @@ import { Camera, ViewType } from "@/types";
 import KItemCard from "@/components/KItemCard.vue";
 import KViewTypeSelector from "@/components/KViewTypeSelector.vue";
 import KTitleBar from "@/components/KTitleBar.vue";
+import KCameraInfo from "@/components/KCameraInfo.vue";
 
 export default defineComponent({
   name: "Home",
-  components: {KTitleBar, KViewTypeSelector, KItemCard, KMap },
+  components: { KCameraInfo, KTitleBar, KViewTypeSelector, KItemCard, KMap },
   setup() {
     const isLoaded = ref(false);
     const search = ref("");
