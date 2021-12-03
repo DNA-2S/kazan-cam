@@ -40,7 +40,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { computed, defineComponent } from "vue";
+import Color from "color";
 
 export default defineComponent({
   name: "KGarbageIcon",
@@ -49,10 +50,29 @@ export default defineComponent({
       type: Number,
       required: true,
     },
-    color: {
+    minColor: {
       type: String,
       default: "#78BC2A",
     },
+    maxColor: {
+      type: String,
+      default: "#f94100",
+    },
+    value: {
+      type: Number,
+      default: 0,
+    },
+  },
+  setup(props) {
+    const color = computed(() => {
+      return Color(props.minColor)
+        .mix(Color(props.maxColor), props.value)
+        .hex();
+    });
+
+    return {
+      color,
+    };
   },
 });
 </script>

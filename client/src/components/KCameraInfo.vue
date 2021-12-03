@@ -1,7 +1,7 @@
 <template>
   <div class="k-camera-info">
     <img :src="getImgById(cam.id)" class="k-camera-info__img" alt="Cam" />
-    <el-button size="large">Назад</el-button>
+    <el-button @click="$emit('back')" size="large">Назад</el-button>
   </div>
 </template>
 
@@ -16,6 +16,7 @@ export default defineComponent({
       type: Object as PropType<Camera>,
     },
   },
+  emits: ["back"],
   setup() {
     const getImgById = (id: number) => {
       return require(`../assets/cams/${id}.jpg`);

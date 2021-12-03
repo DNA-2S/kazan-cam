@@ -3,6 +3,7 @@
   <template :key="cam.id" v-for="cam in cams">
     <k-garbage-icon
       :id="cam.id"
+      :value="cam?.value"
       v-if="viewType === ViewType.DUMPSTER"
     ></k-garbage-icon>
     <k-camera-icon
@@ -12,14 +13,15 @@
     ></k-camera-icon>
     <k-car-icon
       :id="cam.id"
-      color="#FFB90B"
+      min-color="#FFB90B"
+      :value="cam?.value"
       v-else-if="viewType === ViewType['PARKING-AREA']"
     ></k-car-icon>
   </template>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, watch } from "vue";
+import { computed, defineComponent, PropType, watch } from "vue";
 import { Camera, ViewType } from "@/types";
 import KGarbageIcon from "@/components/KGarbageIcon.vue";
 import KCameraIcon from "@/components/KCameraIcon.vue";

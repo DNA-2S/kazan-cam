@@ -6,6 +6,7 @@ export interface Camera {
   comment?: string;
   city?: string;
   name?: string;
+  value?: number;
 }
 
 export enum ViewType {

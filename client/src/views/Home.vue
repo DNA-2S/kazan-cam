@@ -21,7 +21,7 @@
         </div>
       </template>
       <template v-else>
-        <k-camera-info :cam="detailsCam" />
+        <k-camera-info @back="detailsCam = undefined" :cam="detailsCam" />
       </template>
     </aside>
     <main class="k-map-container">
@@ -51,6 +51,7 @@ import KItemCard from "@/components/KItemCard.vue";
 import KViewTypeSelector from "@/components/KViewTypeSelector.vue";
 import KTitleBar from "@/components/KTitleBar.vue";
 import KCameraInfo from "@/components/KCameraInfo.vue";
+import * as random from "random-seed";
 
 export default defineComponent({
   name: "Home",
@@ -81,6 +82,8 @@ export default defineComponent({
     });
 
     const filteredData = computed(() => {
+      const r = random.create();
+
       return (camsJson as Camera[])
         .filter((item) => {
           return (
@@ -92,7 +95,8 @@ export default defineComponent({
         })
         .filter((item) =>
           item.address.toLowerCase().includes(search.value.toLowerCase())
-        );
+        )
+        .map((item) => ({ ...item, value: r.range(100) / 100 }));
     });
 
     const camById = (id: number): Camera => {
