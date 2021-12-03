@@ -16,9 +16,11 @@
         <span class="k-logs__line-timestamp">
           [{{ formattedTimestamp(line.timestamp) }}]
         </span>
-        <span class="k-logs__line-cam">{{
-          `(#${line.cam.id}) ${line.cam.name}`
-        }}</span>
+        <span
+          @click="$router.push({ path: '/', query: { camId: line.cam.id } })"
+          class="k-logs__line-cam"
+          >{{ `(#${line.cam.id}) ${line.cam.name}` }}</span
+        >
         <span class="k-logs__line-message">{{ line.message }}</span>
       </div>
     </div>

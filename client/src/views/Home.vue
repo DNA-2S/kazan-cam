@@ -16,12 +16,18 @@
             :camera="item"
             :active="selectedCam === item.id"
             @click="selectedCam = item.id"
-            @details="detailsCam = $event"
+            @details="$router.push({ path: '/', query: { camId: $event.id } })"
           />
         </div>
       </template>
       <template v-else>
-        <k-camera-info @back="detailsCam = undefined" :cam="detailsCam" />
+        <k-camera-info
+          @back="
+            $router.push({ path: '/' });
+            detailsCam = undefined;
+          "
+          :cam="detailsCam"
+        />
       </template>
     </aside>
     <main class="k-map-container">
@@ -36,7 +42,7 @@
         :select-cam="selectedCam"
         :view-type="viewType"
         :cams="filteredData"
-        @details="detailsCam = camById($event)"
+        @details="$router.push({ path: '/', query: { camId: $event } })"
         v-if="isLoaded"
       ></k-map>
     </main>
@@ -44,7 +50,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, inject, onMounted, ref } from "vue";
+import { computed, defineComponent, inject, onMounted, ref, watch } from "vue";
 import KMap from "@/components/KMap.vue";
 import camsJson from "@/data/cams.json";
 import { Camera, LogObject, ViewType } from "@/types";
@@ -54,6 +60,7 @@ import KTitleBar from "@/components/KTitleBar.vue";
 import KCameraInfo from "@/components/KCameraInfo.vue";
 import * as random from "random-seed";
 import KLogs from "@/components/KLogs.vue";
+import { useRoute } from "vue-router";
 
 export default defineComponent({
   name: "Home",
@@ -74,7 +81,27 @@ export default defineComponent({
     const logs = ref<LogObject[]>([]);
     const cams = ref<Camera[]>([]);
 
+    const route = useRoute();
+
+    watch(
+      () => route.query,
+      (value) => {
+        if (value["camId"]) {
+          detailsCam.value = camById(parseInt(value["camId"][0] || ""));
+        }
+      }
+    );
+
     onMounted(() => {
+      if (route.query["camId"]) {
+        setTimeout(
+          (camId: string) =>
+            (detailsCam.value = camById(parseInt(camId || ""))),
+          500,
+          route.query["camId"][0]
+        );
+      }
+
       const r = random.create();
 
       cams.value = (camsJson as Camera[]).map((item) => {
