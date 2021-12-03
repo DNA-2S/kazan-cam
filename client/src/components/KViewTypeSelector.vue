@@ -10,7 +10,7 @@
       @click="$emit('select', ViewType.DUMPSTER)"
     >
       <i class="fas fa-trash-alt"></i>
-      Dumpsters
+      Мусор
     </div>
     <div
       class="k-view-type-selector__option"
@@ -19,7 +19,7 @@
       @click="$emit('select', ViewType.CAMS)"
     >
       <i class="fas fa-video"></i>
-      Cams
+      Камеры
     </div>
     <div
       class="k-view-type-selector__option"
@@ -28,7 +28,7 @@
       @click="$emit('select', ViewType['PARKING-AREA'])"
     >
       <i class="fas fa-car"></i>
-      Cars
+      Авто
     </div>
     <div
       class="k-view-type-selector__select"
@@ -50,14 +50,10 @@ export default defineComponent({
     },
   },
   emits: ["select"],
-  setup(props, { emit }) {
+  setup(props) {
     const cars = ref<HTMLDivElement>();
     const cams = ref<HTMLDivElement>();
     const dumpsters = ref<HTMLDivElement>();
-
-    onMounted(() => {
-      console.log(cams.value?.offsetLeft);
-    });
 
     const selectColor = computed(() => {
       if (props.viewType === ViewType.CAMS) {
@@ -79,7 +75,7 @@ export default defineComponent({
         div = cars.value;
       }
 
-      return div?.offsetLeft || 150;
+      return div?.offsetLeft || 155;
     });
 
     return {

@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from "vue";
+import { computed, defineComponent, PropType, ref, watch } from "vue";
 import { Camera, ViewType } from "@/types";
 import KGarbageIcon from "@/components/KGarbageIcon.vue";
 import KCameraIcon from "@/components/KCameraIcon.vue";
@@ -42,6 +42,22 @@ export default defineComponent({
   setup(props, { emit }) {
     const ymaps = (window as any).ymaps;
     let myMap: any = null;
+
+    const camsIds = computed(() => {
+      return props.cams.map((item) => item.id);
+    });
+
+    watch(
+      () => camsIds.value,
+      (value) => {
+        myMap.geoObjects.each((geoObject: any) => {
+          geoObject.options.set(
+            "visible",
+            value.indexOf(geoObject.properties.get("idCam")) !== -1
+          );
+        });
+      }
+    );
 
     const init = function () {
       myMap = new ymaps.Map(
@@ -88,6 +104,7 @@ export default defineComponent({
           hintContent: label,
           balloonContent: label,
           iconContent: "XXX",
+          idCam: id,
         },
         {
           iconLayout: MyIconLayout,

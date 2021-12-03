@@ -8,7 +8,7 @@
 
       <div class="k-sidebar__items">
         <k-item-card
-          v-for="item in camsJson"
+          v-for="item in filteredData"
           :key="item.id"
           :name="item.address"
           :desc="item.address"
@@ -23,20 +23,16 @@
           @select="viewType = $event"
         />
       </div>
-      <k-map
-        :view-type="viewType"
-        :cams="camsJson"
-        v-if="isLoaded"
-      ></k-map>
+      <k-map :view-type="viewType" :cams="filteredData" v-if="isLoaded"></k-map>
     </main>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from "vue";
+import { computed, defineComponent, onMounted, ref } from "vue";
 import KMap from "@/components/KMap.vue";
 import camsJson from "@/data/cams.json";
-import { ViewType } from "@/types";
+import { Camera, ViewType } from "@/types";
 import KItemCard from "@/components/KItemCard.vue";
 import KViewTypeSelector from "@/components/KViewTypeSelector.vue";
 
@@ -49,6 +45,13 @@ export default defineComponent({
     const viewType = ref<ViewType>(ViewType.CAMS);
 
     onMounted(() => {
+      if (
+        document.head.querySelectorAll(
+          'script[src*="https://api-maps.yandex.ru/2.1/"]'
+        ).length > 0
+      ) {
+        return;
+      }
       let ymapsScript = document.createElement("script");
       ymapsScript.setAttribute(
         "src",
@@ -59,9 +62,25 @@ export default defineComponent({
       setTimeout(() => (isLoaded.value = true), 300);
     });
 
+    const filteredData = computed(() => {
+      return (camsJson as Camera[])
+        .filter((item) => {
+          return (
+            (viewType.value === ViewType.DUMPSTER && item?.dumpster) ||
+            (viewType.value === ViewType["PARKING-AREA"] &&
+              item?.["parking-area"]) ||
+            viewType.value === ViewType.CAMS
+          );
+        })
+        .filter((item) =>
+          item.address.toLowerCase().includes(search.value.toLowerCase())
+        );
+    });
+
     return {
       isLoaded,
       camsJson,
+      filteredData,
       search,
       viewType,
       ViewType,
