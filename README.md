@@ -20,19 +20,20 @@
  </ul>
 
 <h4>Демо</h4>
-<p>Демо сервиса доступно по адресу: *url* </p>
+Демо сервиса доступно по адресу: https://kazan-cam.vercel.app/
+
+Бэкенд располагается по адресу: https://kazan-cam.herokuapp.com/
 
 Установка и запуск
 ------------
  Сервер
 ------
-Выполните:
 
+### Сборка и запуск на Linux
 ```bash
 sudo apt-get update
-sudo apt-get install -y software-properties-common python3.9 python3-pip
+sudo apt-get install -y software-properties-common python3.9 python3-pip install ffmpeg libsm6 libxext6 -y
 
-git clone git@github.com:DNA-2S/kazan-cam.git
 cd kazan-cam/server
 python3 -m venv .venv
 source .venv/bin/activate
@@ -41,9 +42,23 @@ docker run -d -p 6379:6379 --name realtime-redis redis
 python -m server
 ```
 
-Endpoints:
+### Сборка и запуск с помощью Docker
+```bash
+cd kazan-cam/server
+docker build --tag kazan-cam-backend .
+docker run -d -p 6379:6379 --name realtime-redis redis 
+docker run -d -p 9000:9000 --name realtime-backend kazan-cam-backend 
+```
 
-/endpoint (GET) - ...
+Эндпоинты:
+
+Базовый URL (Для локального окружения): http://localhost:9000
+
+/api/camera - Получение информации по камерам (Город, улица, ID)
+
+/api/camera/{id}/image - Получение замоканного изображения с камеры
+
+/api/cabera/{id}/trash - Получение результата нейросети о состоянии мусорных корзин на изображении с камеры
 
 ***
 

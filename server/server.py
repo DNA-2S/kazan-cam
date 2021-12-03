@@ -22,7 +22,7 @@ class IndexHandler(web.RequestHandler):
 
     def get(self):
         """ Retrieve the page content. """
-        self.render('index.html')
+        self.write({'message': 'hello root world'})
 
 
 class RestHandler(web.RequestHandler):
@@ -32,7 +32,7 @@ class RestHandler(web.RequestHandler):
         self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
 
     def get(self):
-        self.write({'message': 'hello world'})
+        self.write({'message': 'hello test world'})
 
 
 class CameraListRequestHandler(web.RequestHandler):
@@ -43,9 +43,9 @@ class CameraListRequestHandler(web.RequestHandler):
 
     def get(self):
         with open('mock/camera_info.json', encoding='utf-8') as f:
-            data = json.load(f)
+            mocked_camera_info_list = json.load(f)
 
-        self.write(json.dumps(data))
+        self.write(json.dumps(mocked_camera_info_list))
 
 
 class CameraImageRequestHandler(web.RequestHandler):
