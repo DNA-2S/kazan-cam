@@ -31,6 +31,7 @@
           @select="viewType = $event"
         />
       </div>
+      <k-logs :logs="logs" class="k-map-container__logs" />
       <k-map
         :select-cam="selectedCam"
         :view-type="viewType"
@@ -43,27 +44,54 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref } from "vue";
+import { computed, defineComponent, inject, onMounted, ref } from "vue";
 import KMap from "@/components/KMap.vue";
 import camsJson from "@/data/cams.json";
-import { Camera, ViewType } from "@/types";
+import { Camera, LogObject, ViewType } from "@/types";
 import KItemCard from "@/components/KItemCard.vue";
 import KViewTypeSelector from "@/components/KViewTypeSelector.vue";
 import KTitleBar from "@/components/KTitleBar.vue";
 import KCameraInfo from "@/components/KCameraInfo.vue";
 import * as random from "random-seed";
+import KLogs from "@/components/KLogs.vue";
 
 export default defineComponent({
   name: "Home",
-  components: { KCameraInfo, KTitleBar, KViewTypeSelector, KItemCard, KMap },
+  components: {
+    KLogs,
+    KCameraInfo,
+    KTitleBar,
+    KViewTypeSelector,
+    KItemCard,
+    KMap,
+  },
   setup() {
     const isLoaded = ref(false);
     const search = ref("");
     const viewType = ref<ViewType>(ViewType.CAMS);
     const selectedCam = ref(-1);
     const detailsCam = ref<Camera>();
+    const logs = ref<LogObject[]>([]);
+    const cams = ref<Camera[]>([]);
 
     onMounted(() => {
+      const r = random.create();
+
+      cams.value = (camsJson as Camera[]).map((item) => {
+        const value = r.range(100) / 100;
+
+        log({
+          timestamp: Date.now(),
+          message: "Пробное сообщение в лог",
+          cam: item,
+        });
+
+        return {
+          ...item,
+          value,
+        };
+      });
+
       if (
         document.head.querySelectorAll(
           'script[src*="https://api-maps.yandex.ru/2.1/"]'
@@ -82,9 +110,7 @@ export default defineComponent({
     });
 
     const filteredData = computed(() => {
-      const r = random.create();
-
-      return (camsJson as Camera[])
+      return cams.value
         .filter((item) => {
           return (
             (viewType.value === ViewType.DUMPSTER && item?.dumpster) ||
@@ -95,13 +121,18 @@ export default defineComponent({
         })
         .filter((item) =>
           item.address.toLowerCase().includes(search.value.toLowerCase())
-        )
-        .map((item) => ({ ...item, value: r.range(100) / 100 }));
+        );
     });
 
     const camById = (id: number): Camera => {
-      return (camsJson as Camera[]).filter((item) => item.id === id)[0];
+      return cams.value.filter((item) => item.id === id)[0];
     };
+
+    const log = (obj: LogObject): void => {
+      logs.value.push(obj);
+    };
+
+    inject("log", log);
 
     return {
       isLoaded,
@@ -113,6 +144,7 @@ export default defineComponent({
       selectedCam,
       detailsCam,
       camById,
+      logs,
     };
   },
 });
@@ -146,6 +178,13 @@ export default defineComponent({
   height: 100%;
   width: 100%;
   position: relative;
+
+  &__logs {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    z-index: 999;
+  }
 
   &__selector {
     position: absolute;

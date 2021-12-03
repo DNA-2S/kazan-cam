@@ -14,3 +14,9 @@ export enum ViewType {
   "PARKING-AREA",
   CAMS,
 }
+
+export interface LogObject {
+  message: string;
+  cam: Camera;
+  timestamp: number;
+}
