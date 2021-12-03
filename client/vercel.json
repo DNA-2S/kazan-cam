@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/api", "destination": "https://kazan-cam.herokuapp.com/" }
+  ]
+}
