@@ -31,7 +31,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .k-camera-info {
-  width: 100%;
+  width: calc(100% - 30px);
+  position: relative;
 
   &__img {
     width: 100%;
