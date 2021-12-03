@@ -16,7 +16,7 @@
 	<li>Vue.</li>
 	<li>Git.</li>
 	<li>Heroku.</li>
-
+	<li>Vercel.</li>
  </ul>
 
 <h4>Демо</h4>
@@ -32,8 +32,8 @@
 sudo apt-get update
 sudo apt-get install -y software-properties-common python3.9 python3-pip
 
-git clone git@github.com:Nikita-Sherstnev/*repo*.git
-cd *repo*/server
+git clone git@github.com:Nikita-Sherstnev/kazan-cam.git
+cd kazan-cam/server
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
@@ -57,8 +57,8 @@ Endpoints:
 
 ### Установка
 ```
-git clone git@github.com:Nikita-Sherstnev/*repo*.git
-cd *repo*/client
+git clone git@github.com:Nikita-Sherstnev/kazan-cam.git
+cd kazan-cam/client
 yarn install
 ```
 
