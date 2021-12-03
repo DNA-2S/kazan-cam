@@ -204,6 +204,7 @@ export default defineComponent({
   grid-area: map;
   height: 100%;
   width: 100%;
+  overflow: hidden;
   position: relative;
 
   &__logs {
