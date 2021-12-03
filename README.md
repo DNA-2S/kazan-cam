@@ -32,7 +32,7 @@
 sudo apt-get update
 sudo apt-get install -y software-properties-common python3.9 python3-pip
 
-git clone git@github.com:Nikita-Sherstnev/kazan-cam.git
+git clone git@github.com:DNA-2S/kazan-cam.git
 cd kazan-cam/server
 python3 -m venv .venv
 source .venv/bin/activate
@@ -57,7 +57,7 @@ Endpoints:
 
 ### Установка
 ```
-git clone git@github.com:Nikita-Sherstnev/kazan-cam.git
+git clone git@github.com:DNA-2S/kazan-cam.git
 cd kazan-cam/client
 yarn install
 ```
