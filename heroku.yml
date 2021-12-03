@@ -1,0 +1,8 @@
+setup:
+  addons:
+    - plan: heroku-redis
+      as: CACHE
+build:
+  docker:
+    frontend: client/Dockerfile
+    backend: server/Dockerfile
