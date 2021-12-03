@@ -66,7 +66,7 @@ export default defineComponent({
       );
       document.head.appendChild(ymapsScript);
 
-      setTimeout(() => (isLoaded.value = true), 300);
+      setTimeout(() => (isLoaded.value = true), 600);
     });
 
     const filteredData = computed(() => {
