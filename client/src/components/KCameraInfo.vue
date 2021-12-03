@@ -145,7 +145,6 @@ export default defineComponent({
 
     const containersData = computed<ContainerData[]>(() => {
       let containers = [] as ContainerData[];
-      console.log(props.cam);
       let localData = props.cam?.containers || [];
       for (let i = 0; i < localData.length; i++) {
         containers.push({
@@ -159,6 +158,10 @@ export default defineComponent({
 
     const carsData = computed<CarData[]>(() => {
       let containers = [] as CarData[];
+      if (!props.cam["parking-area"]) {
+        return [];
+      }
+
       containers.push({
         property: `Кол-во машин без номеров`,
         value: Math.floor((props.cam?.value || 1) * 10) + "",

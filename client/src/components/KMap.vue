@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, watch } from "vue";
+import { computed, defineComponent, PropType, ref, watch } from "vue";
 import { Camera, ViewType } from "@/types";
 import KGarbageIcon from "@/components/KGarbageIcon.vue";
 import KCameraIcon from "@/components/KCameraIcon.vue";
@@ -48,6 +48,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const ymaps = (window as any).ymaps;
     let myMap: any = null;
+    const loading = ref(false);
 
     const camsIds = computed(() => {
       return props.cams.map((item) => item.id);
@@ -79,6 +80,10 @@ export default defineComponent({
     watch(
       () => camsIds.value,
       (value) => {
+        if (!loading.value) {
+          return;
+        }
+
         let lastPlacemark = -1;
 
         myMap.geoObjects.each((geoObject: any) => {
@@ -124,6 +129,8 @@ export default defineComponent({
             }
           });
       });
+
+      setTimeout(() => (loading.value = true), 1000);
     };
 
     const addGeoPoint = (geoObject: any, label: string, id: number) => {
@@ -161,7 +168,7 @@ export default defineComponent({
       myMap.geoObjects.add(myPlacemark);
     };
 
-    ymaps.ready(init);
+    setTimeout(() => ymaps.ready(init), 500);
 
     return {
       ViewType,
