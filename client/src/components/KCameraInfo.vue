@@ -10,7 +10,11 @@
       </div>
     </div>
     <div class="k-camera-info__img-wrapper">
-      <img :src="getImgById(cam.id)" class="k-camera-info__img" alt="Cam" />
+      <img
+        :src="`data:image/jpg;base64,${image}`"
+        class="k-camera-info__img"
+        alt="Cam"
+      />
     </div>
     <div class="k-camera-info__container-wrapper">
       <div class="k-camera-info__container">
@@ -30,8 +34,8 @@
           v-if="carsData.length !== 0"
           style="width: 380px"
         >
-          <el-table-column prop="name" label="Свойство" width="180" />
-          <el-table-column prop="status" label="Значение" width="180" />
+          <el-table-column prop="property" label="Свойство" width="180" />
+          <el-table-column prop="value" label="Значение" width="180" />
         </el-table>
         <div class="empty" v-else>Данные отсутствуют</div>
       </div>
@@ -53,7 +57,24 @@
     :close-on-press-escape="true"
     :show-close="true"
   >
-    <div class="q-welcome"></div>
+    <div class="k-send-data">
+      <div class="k-send-data__buttons">
+        <k-send-data-card>
+          <img
+            src="@/assets/garbage-truck.png"
+            alt="icon"
+            style="width: 60px; height: 60px"
+          />
+        </k-send-data-card>
+        <k-send-data-card>
+          <img
+            src="@/assets/tow-truck.png"
+            alt="icon"
+            style="width: 60px; height: 60px"
+          />
+        </k-send-data-card>
+      </div>
+    </div>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="send" type="warning"> Отправить </el-button>
@@ -63,24 +84,60 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, inject, PropType, ref } from "vue";
+import {
+  computed,
+  defineComponent,
+  inject,
+  onMounted,
+  PropType,
+  ref,
+  watch,
+} from "vue";
 import { Camera, LogObject } from "@/types";
+import KSendDataCard from "@/components/KSendDataCard.vue";
 
 interface ContainerData {
   name: string;
   status: string;
 }
 
+interface CarData {
+  property: string;
+  value: string;
+}
+
 export default defineComponent({
   name: "KCameraInfo",
+  components: { KSendDataCard },
   props: {
     cam: {
       type: Object as PropType<Camera>,
+      required: true,
     },
   },
   emits: ["back"],
   setup(props) {
     const dialogVisible = ref(false);
+    const image = ref("");
+
+    watch(
+      () => props.cam,
+      (value: Camera) => {
+        fetch(`/api/camera/${value.id}/image`)
+          .then((res) => res.json())
+          .then((res: { image: string }) => {
+            image.value = res.image;
+          });
+      }
+    );
+
+    onMounted(() => {
+      fetch(`/api/camera/${props.cam.id}/image`)
+        .then((res) => res.json())
+        .then((res: { image: string }) => {
+          image.value = res.image;
+        });
+    });
 
     const getImgById = (id: number) => {
       return require(`../assets/cams/${id}.jpg`);
@@ -88,6 +145,7 @@ export default defineComponent({
 
     const containersData = computed<ContainerData[]>(() => {
       let containers = [] as ContainerData[];
+      console.log(props.cam);
       let localData = props.cam?.containers || [];
       for (let i = 0; i < localData.length; i++) {
         containers.push({
@@ -99,11 +157,11 @@ export default defineComponent({
       return containers;
     });
 
-    const carsData = computed<ContainerData[]>(() => {
-      let containers = [] as ContainerData[];
+    const carsData = computed<CarData[]>(() => {
+      let containers = [] as CarData[];
       containers.push({
-        name: `Кол-во машин без номеров`,
-        status: Math.floor((props.cam?.value || 1) * 10) + "",
+        property: `Кол-во машин без номеров`,
+        value: Math.floor((props.cam?.value || 1) * 10) + "",
       });
 
       return containers;
@@ -128,12 +186,21 @@ export default defineComponent({
       carsData,
       dialogVisible,
       send,
+      image,
     };
   },
 });
 </script>
 
 <style lang="scss" scoped>
+.k-send-data {
+  &__buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
 .k-camera-info {
   width: calc(100% - 30px);
   height: calc(100% - 110px);

@@ -23,7 +23,7 @@ class IndexHandler(web.RequestHandler):
 
     def get(self):
         """ Retrieve the page content. """
-        self.render('index.html')
+        self.write({'message': 'hello root world'})
 
 
 class RestHandler(web.RequestHandler):
@@ -33,7 +33,7 @@ class RestHandler(web.RequestHandler):
         self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
 
     def get(self):
-        self.write({'message': 'hello world'})
+        self.write({'message': 'hello test world'})
 
 
 class CameraListRequestHandler(web.RequestHandler):
@@ -44,9 +44,9 @@ class CameraListRequestHandler(web.RequestHandler):
 
     def get(self):
         with open('mock/camera_info.json', encoding='utf-8') as f:
-            data = json.load(f)
+            mocked_camera_info_list = json.load(f)
 
-        self.write(json.dumps(data))
+        self.write(json.dumps(mocked_camera_info_list))
 
 
 class CameraImageRequestHandler(web.RequestHandler):
@@ -57,15 +57,21 @@ class CameraImageRequestHandler(web.RequestHandler):
 
     def get(self, cam_id):
         mocked_camera_image_file = f"mock/cams/{cam_id}.jpg"
-        image = open(mocked_camera_image_file, 'rb')
-        image_read = image.read()
-        image_64_encode = base64.b64encode(image_read)
 
-        returned_data = {
-            "image": image_64_encode.decode("utf-8")
-        }
+        try:
+            image = open(mocked_camera_image_file, 'rb')
+            image_read = image.read()
+            image_64_encode = base64.b64encode(image_read)
 
-        self.write(returned_data)
+            returned_data = {
+                "image": image_64_encode.decode("utf-8")
+            }
+
+            self.write(returned_data)
+        except OSError as error:
+            print(error)
+            self.set_status(404)
+            self.finish("<html><body>404: Камера не найдена</body></html>")
 
 
 class CameraTrashInfoRequestHandler(web.RequestHandler):
@@ -89,6 +95,12 @@ class CameraTrashInfoRequestHandler(web.RequestHandler):
         }
 
         self.write(returned_data)
+        
+        camera_found = True
+
+        if camera_found is not True:
+            self.set_status(404)
+            self.finish("<html><body>404: Камера не найдена</body></html>")
 
 
 class SocketHandler(websocket.WebSocketHandler):

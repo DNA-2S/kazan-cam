@@ -52,7 +52,6 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, provide, ref, watch } from "vue";
 import KMap from "@/components/KMap.vue";
-import camsJson from "@/data/cams.json";
 import { Camera, LogObject, ViewType } from "@/types";
 import KItemCard from "@/components/KItemCard.vue";
 import KViewTypeSelector from "@/components/KViewTypeSelector.vue";
@@ -61,6 +60,11 @@ import KCameraInfo from "@/components/KCameraInfo.vue";
 import * as random from "random-seed";
 import KLogs from "@/components/KLogs.vue";
 import { useRoute } from "vue-router";
+
+interface Trash {
+  filledContainers: number;
+  totalContainers: number;
+}
 
 export default defineComponent({
   name: "Home",
@@ -87,7 +91,7 @@ export default defineComponent({
       () => route.query,
       (value) => {
         if (value["camId"]) {
-          detailsCam.value = camById(parseInt(value["camId"][0] || ""));
+          detailsCam.value = camById(parseInt(value["camId"] + ""));
 
           log({
             timestamp: Date.now(),
@@ -101,45 +105,63 @@ export default defineComponent({
     onMounted(() => {
       if (route.query["camId"]) {
         setTimeout(
-          (camId: string) =>
-            (detailsCam.value = camById(parseInt(camId || ""))),
+          (camId: string) => (detailsCam.value = camById(parseInt(camId))),
           500,
-          route.query["camId"][0]
+          route.query["camId"] + ""
         );
       }
 
       const r = random.create();
 
-      cams.value = (camsJson as Camera[]).map((item) => {
-        let value = 0;
+      fetch("/api/camera")
+        .then((res) => res.json())
+        .then((res: Camera[]) => {
+          cams.value = res.map((item) => {
+            let value = 0;
 
-        if (item.dumpster) {
-          let length = (item.containers || []).length;
-          let filled = (item.containers || []).filter((item) => item).length;
-          if (length === 0 || filled === 0) {
-            value = 0;
-          } else {
-            value = filled / length;
-          }
+            if (item.dumpster) {
+              fetch(`/api/camera/${item.id}/trash`)
+                .then((res) => res.json())
+                .then((res: Trash) => {
+                  let locValue = 0;
+                  if (res.totalContainers === 0 || res.filledContainers === 0) {
+                    locValue = 0;
+                  } else {
+                    locValue = res.filledContainers / res.totalContainers;
+                  }
 
-          if (value >= 0.5) {
-            log({
-              timestamp: Date.now(),
-              message: "Уровень заполненности мусорки превышает 50%",
-              cam: item,
-            });
-          }
-        }
+                  if (locValue >= 0.5) {
+                    log({
+                      timestamp: Date.now(),
+                      message: "Уровень заполненности мусорки превышает 50%",
+                      cam: item,
+                    });
+                  }
 
-        if (item["parking-area"]) {
-          value = r.range(30) / 100;
-        }
+                  setTimeout(() => {
+                    cams.value = cams.value.map((el) => {
+                      if (el.id === item.id) {
+                        return {
+                          ...item,
+                          value: locValue,
+                        };
+                      } else return el;
+                    });
+                  }, 500);
+                });
+            }
 
-        return {
-          ...item,
-          value,
-        };
-      });
+            if (item["parking-area"]) {
+              value = r.range(30) / 100;
+            }
+
+            return {
+              ...item,
+              containers: [],
+              value,
+            };
+          });
+        });
 
       if (
         document.head.querySelectorAll(
@@ -185,7 +207,6 @@ export default defineComponent({
 
     return {
       isLoaded,
-      camsJson,
       filteredData,
       search,
       viewType,

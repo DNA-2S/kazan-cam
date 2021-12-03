@@ -1,11 +1,34 @@
 <h4>Реализованная функциональность</h4>
 <ul>
-    <li></li>
+    <li>Анализ мусорных контейнеров по видеоряду:</li>
+    <ol>
+        <li>Отображение статуса каждой корзины</li>
+        <li>Отображение общего статуса точки</li>
+    </ol>
+	<li>Отображение текущего состояние города</li>
+	<li>Разделение камер по функциональности:</li>
+    <ol>
+        <li>Слежение за мусорками</li>
+        <li>Слежение за парковками</li>
+        <li>Остальные камеры</li>
+    </ol>
+    <li>Интеграция с Яндекс.Картами</li>
+    <li>Поиск камеры по названию улицы и номеру дома</li>
+    <li>Отправка доклада о текущем состоянии точки:</li>
+    <ol>
+        <li>Возможность создания доклада о необходимости забора мусора</li>
+        <li>Возможность создания доклада о необходимости эвакуации автомобиля</li>
+    </ol>
+    <li>Система журналирования событий</li>
 </ul>
 
 <h4>Особенность проекта в следующем:</h4>
 <ul>
-	<li></li>
+	<li>Удобное взаимодействие с камерами через интерактивную карту</li>
+	<li>Возможность ручного управления</li>
+    <li>Просмотр ситуации с любой подключенной к системе камеры в режиме реального времени</li>
+    <li>Удобная цветная разметка камер, наблюдающие за точками сбора отходов</li>
+    <li>Возможность горизонтального масштабирования благодаря гибкой архитектуре сервиса</li>
 </ul>
 <h4>Основной стек технологий:</h4>
 <ul>
@@ -20,19 +43,20 @@
  </ul>
 
 <h4>Демо</h4>
-<p>Демо сервиса доступно по адресу: *url* </p>
+Демо сервиса доступно по адресу: https://kazan-cam.vercel.app/
+
+Бэкенд располагается по адресу: https://kazan-cam.herokuapp.com/
 
 Установка и запуск
 ------------
  Сервер
 ------
-Выполните:
 
+### Сборка и запуск на Linux
 ```bash
 sudo apt-get update
-sudo apt-get install -y software-properties-common python3.9 python3-pip
+sudo apt-get install -y software-properties-common python3.9 python3-pip install ffmpeg libsm6 libxext6 -y
 
-git clone git@github.com:DNA-2S/kazan-cam.git
 cd kazan-cam/server
 python3 -m venv .venv
 source .venv/bin/activate
@@ -41,9 +65,26 @@ docker run -d -p 6379:6379 --name realtime-redis redis
 python -m server
 ```
 
-Endpoints:
+### Сборка и запуск с помощью Docker
+```bash
+cd kazan-cam/server
+docker build --tag kazan-cam-backend .
+docker run -d -p 6379:6379 --name realtime-redis redis 
+docker run -d -p 9000:9000 --name realtime-backend kazan-cam-backend 
+```
 
-/endpoint (GET) - ...
+###Эндпоинты
+
+Сваггер находится тут: https://app.swaggerhub.com/apis/stepan14041999/kazan-cam/1.0.0#/
+
+Также имеется файл server/kazan-cam-1.0.0-swagger.yaml для локальной загрузки
+
+Базовый URL (Для локального окружения): http://localhost:9000
+
+Список:
+- /api/camera - Получение информации по камерам (Город, улица, ID)
+- /api/camera/{id}/image - Получение замоканного изображения с камеры
+- /api/cabera/{id}/trash - Получение результата нейросети о состоянии мусорных корзин на изображении с камеры
 
 ***
 

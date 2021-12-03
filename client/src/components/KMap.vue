@@ -153,8 +153,9 @@ export default defineComponent({
         }
       );
 
-      myPlacemark.events.add("click", function () {
-        emit("details", id);
+      myPlacemark.events.add("click", function (e: any) {
+        let geoObjet = e.get("target");
+        emit("details", geoObjet.properties.get("idCam"));
       });
 
       myMap.geoObjects.add(myPlacemark);
