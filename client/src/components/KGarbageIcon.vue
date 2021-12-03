@@ -15,10 +15,24 @@
           fill="#fff"
         />
       </g>
-      <text x="15 " y="46" font-size="18px" fill="#000" text-anchor="middle">
+      <text
+        x="15 "
+        y="46"
+        font-size="18px"
+        fill="#000"
+        font-family="Arial"
+        text-anchor="middle"
+      >
         {{ `#${id}` }}
       </text>
-      <text x="15" y="45" font-size="18px" :fill="color" text-anchor="middle">
+      <text
+        x="15"
+        y="45"
+        font-size="18px"
+        :fill="color"
+        font-family="Arial"
+        text-anchor="middle"
+      >
         {{ `#${id}` }}
       </text>
     </symbol>

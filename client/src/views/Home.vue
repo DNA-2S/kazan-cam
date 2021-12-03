@@ -1,20 +1,25 @@
 <template>
-  <div class="k-home">
+  <div class="k-home" :class="{ details: detailsCam }">
     <aside class="k-sidebar">
-      <div class="k-sidebar__input-wrapper">
-        <i class="fas fa-search k-sidebar__input-icon"></i>
-        <input type="text" class="k-sidebar__input" v-model="search" />
-      </div>
+      <k-title-bar />
 
-      <div class="k-sidebar__items">
-        <k-item-card
-          v-for="item in filteredData"
-          :key="item.id"
-          :camera="item"
-          :active="selectedCam === item.id"
-          @click="selectedCam = item.id"
-        />
-      </div>
+      <template v-if="!detailsCam">
+        <div class="k-sidebar__input-wrapper">
+          <i class="fas fa-search k-sidebar__input-icon"></i>
+          <input type="text" class="k-sidebar__input" v-model="search" />
+        </div>
+
+        <div class="k-sidebar__items">
+          <k-item-card
+            v-for="item in filteredData"
+            :key="item.id"
+            :camera="item"
+            :active="selectedCam === item.id"
+            @click="selectedCam = item.id"
+            @details="detailsCam = $event"
+          />
+        </div>
+      </template>
     </aside>
     <main class="k-map-container">
       <div class="k-map-container__selector">
@@ -27,6 +32,7 @@
         :select-cam="selectedCam"
         :view-type="viewType"
         :cams="filteredData"
+        @details="detailsCam = camById($event)"
         v-if="isLoaded"
       ></k-map>
     </main>
@@ -40,15 +46,17 @@ import camsJson from "@/data/cams.json";
 import { Camera, ViewType } from "@/types";
 import KItemCard from "@/components/KItemCard.vue";
 import KViewTypeSelector from "@/components/KViewTypeSelector.vue";
+import KTitleBar from "@/components/KTitleBar.vue";
 
 export default defineComponent({
   name: "Home",
-  components: { KViewTypeSelector, KItemCard, KMap },
+  components: {KTitleBar, KViewTypeSelector, KItemCard, KMap },
   setup() {
     const isLoaded = ref(false);
     const search = ref("");
     const viewType = ref<ViewType>(ViewType.CAMS);
     const selectedCam = ref(-1);
+    const detailsCam = ref<Camera>();
 
     onMounted(() => {
       if (
@@ -83,6 +91,10 @@ export default defineComponent({
         );
     });
 
+    const camById = (id: number): Camera => {
+      return (camsJson as Camera[]).filter((item) => item.id === id)[0];
+    };
+
     return {
       isLoaded,
       camsJson,
@@ -91,6 +103,8 @@ export default defineComponent({
       viewType,
       ViewType,
       selectedCam,
+      detailsCam,
+      camById,
     };
   },
 });
@@ -107,6 +121,10 @@ export default defineComponent({
   grid-template-areas: "sidebar map";
   grid-template-columns: 480px 1fr;
   grid-template-rows: 1fr;
+
+  &.details {
+    grid-template-columns: 40% 1fr;
+  }
 }
 
 .k-sidebar {
@@ -158,7 +176,7 @@ export default defineComponent({
 
   &__items {
     width: calc(100% - 30px);
-    height: calc(100% - 115px);
+    height: calc(100% - 175px);
     overflow-y: auto;
   }
 

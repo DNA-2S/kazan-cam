@@ -123,7 +123,7 @@ export default defineComponent({
   }
 
   &__id {
-    font-weight: lighter;
+    font-weight: normal;
     color: #969696;
     margin-right: 25px;
     height: 25px;
