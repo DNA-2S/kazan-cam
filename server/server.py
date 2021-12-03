@@ -125,9 +125,9 @@ app = web.Application([
     (r'/', IndexHandler),
     (r'/ws', SocketHandler),
     (r'/test', RestHandler),
-    (r'/camera', CameraListRequestHandler),
-    (r'/camera/([^/]*)/image', CameraImageRequestHandler),
-    (r'/camera/([^/]*)/trash', CameraTrashInfoRequestHandler),
+    (r'/api/camera', CameraListRequestHandler),
+    (r'/api/camera/([^/]*)/image', CameraImageRequestHandler),
+    (r'/api/camera/([^/]*)/trash', CameraTrashInfoRequestHandler),
 ])
 
 
