@@ -12,7 +12,8 @@
           :key="item.id"
           :name="item.address"
           :desc="item.address"
-          :active="false"
+          :active="selectedCam === item.id"
+          @click="selectedCam = item.id"
         />
       </div>
     </aside>
@@ -23,7 +24,12 @@
           @select="viewType = $event"
         />
       </div>
-      <k-map :view-type="viewType" :cams="filteredData" v-if="isLoaded"></k-map>
+      <k-map
+        :select-cam="selectedCam"
+        :view-type="viewType"
+        :cams="filteredData"
+        v-if="isLoaded"
+      ></k-map>
     </main>
   </div>
 </template>
@@ -43,6 +49,7 @@ export default defineComponent({
     const isLoaded = ref(false);
     const search = ref("");
     const viewType = ref<ViewType>(ViewType.CAMS);
+    const selectedCam = ref(-1);
 
     onMounted(() => {
       if (
@@ -84,6 +91,7 @@ export default defineComponent({
       search,
       viewType,
       ViewType,
+      selectedCam,
     };
   },
 });

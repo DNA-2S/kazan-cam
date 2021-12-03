@@ -38,6 +38,10 @@ export default defineComponent({
       type: Number,
       default: ViewType.CAMS,
     },
+    selectCam: {
+      type: Number,
+      default: -1,
+    },
   },
   setup(props, { emit }) {
     const ymaps = (window as any).ymaps;
@@ -47,15 +51,46 @@ export default defineComponent({
       return props.cams.map((item) => item.id);
     });
 
+    const goToPlacemarkById = (id: number) => {
+      myMap.geoObjects.each((geoObject: any) => {
+        if (geoObject.properties.get("idCam") === id) {
+          goToPlacemark(geoObject);
+        }
+      });
+    };
+
+    const goToPlacemark = (geoObject: any) => {
+      myMap.setCenter(geoObject.geometry.getCoordinates(), 13);
+    };
+
+    watch(
+      () => props.selectCam,
+      (value) => {
+        if (value === -1) {
+          return;
+        }
+
+        goToPlacemarkById(value);
+      }
+    );
+
     watch(
       () => camsIds.value,
       (value) => {
+        let lastPlacemark = -1;
+
         myMap.geoObjects.each((geoObject: any) => {
-          geoObject.options.set(
-            "visible",
-            value.indexOf(geoObject.properties.get("idCam")) !== -1
-          );
+          const isVisible =
+            value.indexOf(geoObject.properties.get("idCam")) !== -1;
+
+          geoObject.options.set("visible", isVisible);
+
+          if (isVisible) {
+            lastPlacemark = geoObject.properties.get("idCam");
+          }
         });
+
+        goToPlacemarkById(lastPlacemark);
       }
     );
 
