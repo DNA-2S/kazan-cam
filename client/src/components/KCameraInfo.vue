@@ -10,7 +10,11 @@
       </div>
     </div>
     <div class="k-camera-info__img-wrapper">
-      <img :src="getImgById(cam.id)" class="k-camera-info__img" alt="Cam" />
+      <img
+        :src="`data:image/jpg;base64,${image}`"
+        class="k-camera-info__img"
+        alt="Cam"
+      />
     </div>
     <div class="k-camera-info__container-wrapper">
       <div class="k-camera-info__container">
@@ -80,7 +84,15 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, inject, PropType, ref } from "vue";
+import {
+  computed,
+  defineComponent,
+  inject,
+  onMounted,
+  PropType,
+  ref,
+  watch,
+} from "vue";
 import { Camera, LogObject } from "@/types";
 import KSendDataCard from "@/components/KSendDataCard.vue";
 
@@ -100,11 +112,32 @@ export default defineComponent({
   props: {
     cam: {
       type: Object as PropType<Camera>,
+      required: true,
     },
   },
   emits: ["back"],
   setup(props) {
     const dialogVisible = ref(false);
+    const image = ref("");
+
+    watch(
+      () => props.cam,
+      (value: Camera) => {
+        fetch(`/api/camera/${value.id}/image`)
+          .then((res) => res.json())
+          .then((res: { image: string }) => {
+            image.value = res.image;
+          });
+      }
+    );
+
+    onMounted(() => {
+      fetch(`/api/camera/${props.cam.id}/image`)
+        .then((res) => res.json())
+        .then((res: { image: string }) => {
+          image.value = res.image;
+        });
+    });
 
     const getImgById = (id: number) => {
       return require(`../assets/cams/${id}.jpg`);
@@ -152,6 +185,7 @@ export default defineComponent({
       carsData,
       dialogVisible,
       send,
+      image,
     };
   },
 });
