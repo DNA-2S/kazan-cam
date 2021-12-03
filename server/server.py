@@ -8,6 +8,7 @@ import redis
 from tornado import websocket, web, ioloop
 
 from recorder import create_videostream
+from detect import run
 
 MAX_FPS = 24
 
@@ -74,19 +75,20 @@ class CameraTrashInfoRequestHandler(web.RequestHandler):
         self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
 
     def get(self, cam_id):
-        # TODO Сейчас данные по заполнености корзины читаются из мок-файлов. Далее планируется применить нейросеть для
-        # TODO определения заполннености
-        with open('mock/camera_info.json', encoding='utf-8') as f:
-            mocked_camera_info_list = json.load(f)
+        pred = run(source='mock', imgsz=[1080, 1920])
 
-        for camera_info in mocked_camera_info_list:
-            if camera_info['id'] == int(cam_id):
-                returned_data = {
-                    "filledContainers": camera_info['containers'].count(True),
-                    "totalContainers": len(camera_info['containers'])
-                }
+        filled = 0
+        for det in pred:
+            if det[-1] == 1:
+                filled += 1
+        total = pred.shape[0]
 
-                self.write(returned_data)
+        returned_data = {
+            "filledContainers": filled,
+            "totalContainers": total
+        }
+
+        self.write(returned_data)
 
 
 class SocketHandler(websocket.WebSocketHandler):
