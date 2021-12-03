@@ -48,7 +48,7 @@ class CameraListRequestHandler(web.RequestHandler):
         self.write(json.dumps(data))
 
 
-class CameraInfoRequestHandler(web.RequestHandler):
+class CameraImageRequestHandler(web.RequestHandler):
     def set_default_headers(self):
         self.set_header("Access-Control-Allow-Origin", "*")
         self.set_header("Access-Control-Allow-Headers", "x-requested-with")
@@ -60,6 +60,20 @@ class CameraInfoRequestHandler(web.RequestHandler):
         image_read = image.read()
         image_64_encode = base64.b64encode(image_read)
 
+        returned_data = {
+            "image": image_64_encode.decode("utf-8")
+        }
+
+        self.write(returned_data)
+
+
+class CameraTrashInfoRequestHandler(web.RequestHandler):
+    def set_default_headers(self):
+        self.set_header("Access-Control-Allow-Origin", "*")
+        self.set_header("Access-Control-Allow-Headers", "x-requested-with")
+        self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
+
+    def get(self, cam_id):
         # TODO Сейчас данные по заполнености корзины читаются из мок-файлов. Далее планируется применить нейросеть для
         # TODO определения заполннености
         with open('mock/camera_info.json', encoding='utf-8') as f:
@@ -68,7 +82,6 @@ class CameraInfoRequestHandler(web.RequestHandler):
         for camera_info in mocked_camera_info_list:
             if camera_info['id'] == int(cam_id):
                 returned_data = {
-                    "image": image_64_encode.decode("utf-8"),
                     "filledContainers": camera_info['containers'].count(True),
                     "totalContainers": len(camera_info['containers'])
                 }
@@ -113,7 +126,8 @@ app = web.Application([
     (r'/ws', SocketHandler),
     (r'/test', RestHandler),
     (r'/camera', CameraListRequestHandler),
-    (r'/camera/([^/]*)', CameraInfoRequestHandler),
+    (r'/camera/([^/]*)/image', CameraImageRequestHandler),
+    (r'/camera/([^/]*)/trash', CameraTrashInfoRequestHandler),
 ])
 
 
