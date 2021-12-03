@@ -17,8 +17,14 @@
       </div>
     </aside>
     <main class="k-map-container">
+      <div class="k-map-container__selector">
+        <k-view-type-selector
+          :view-type="viewType"
+          @select="viewType = $event"
+        />
+      </div>
       <k-map
-        :view-type="ViewType.CAMS"
+        :view-type="viewType"
         :cams="camsJson"
         v-if="isLoaded"
       ></k-map>
@@ -30,15 +36,17 @@
 import { defineComponent, onMounted, ref } from "vue";
 import KMap from "@/components/KMap.vue";
 import camsJson from "@/data/cams.json";
-import { Camera, ViewType } from "@/types";
+import { ViewType } from "@/types";
 import KItemCard from "@/components/KItemCard.vue";
+import KViewTypeSelector from "@/components/KViewTypeSelector.vue";
 
 export default defineComponent({
   name: "Home",
-  components: { KItemCard, KMap },
+  components: { KViewTypeSelector, KItemCard, KMap },
   setup() {
     const isLoaded = ref(false);
     const search = ref("");
+    const viewType = ref<ViewType>(ViewType.CAMS);
 
     onMounted(() => {
       let ymapsScript = document.createElement("script");
@@ -55,6 +63,7 @@ export default defineComponent({
       isLoaded,
       camsJson,
       search,
+      viewType,
       ViewType,
     };
   },
@@ -84,6 +93,20 @@ export default defineComponent({
   grid-area: map;
   height: 100%;
   width: 100%;
+  position: relative;
+
+  &__selector {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    user-select: none;
+  }
 }
 
 .k-sidebar {

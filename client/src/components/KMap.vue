@@ -4,9 +4,11 @@
     <k-garbage-icon
       :id="cam.id"
       v-if="viewType === ViewType.DUMPSTER"
+      color="#FFB90B"
     ></k-garbage-icon>
     <k-camera-icon
       :id="cam.id"
+      color="#6E4CF5"
       v-else-if="viewType === ViewType.CAMS"
     ></k-camera-icon>
     <k-car-icon
