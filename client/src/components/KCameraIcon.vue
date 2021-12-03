@@ -37,6 +37,9 @@
           fill-rule="evenodd"
         />
       </g>
+      <text x="15 " y="46" font-size="18px" fill="#000" text-anchor="middle">
+        {{ `#${id}` }}
+      </text>
       <text x="15" y="45" font-size="18px" :fill="color" text-anchor="middle">
         {{ `#${id}` }}
       </text>
