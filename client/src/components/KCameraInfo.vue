@@ -37,14 +37,34 @@
       </div>
     </div>
     <div class="k-camera-info__actions">
+      <el-button type="warning" @click="dialogVisible = true" size="large">
+        Отправить данные
+      </el-button>
       <el-button @click="$emit('back')" size="large">Назад</el-button>
     </div>
   </div>
+
+  <el-dialog
+    v-model="dialogVisible"
+    title="Отправка данных"
+    width="30%"
+    center
+    :close-on-click-modal="true"
+    :close-on-press-escape="true"
+    :show-close="true"
+  >
+    <div class="q-welcome"></div>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="send" type="warning"> Отправить </el-button>
+      </span>
+    </template>
+  </el-dialog>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from "vue";
-import { Camera } from "@/types";
+import { computed, defineComponent, inject, PropType, ref } from "vue";
+import { Camera, LogObject } from "@/types";
 
 interface ContainerData {
   name: string;
@@ -60,6 +80,8 @@ export default defineComponent({
   },
   emits: ["back"],
   setup(props) {
+    const dialogVisible = ref(false);
+
     const getImgById = (id: number) => {
       return require(`../assets/cams/${id}.jpg`);
     };
@@ -87,10 +109,25 @@ export default defineComponent({
       return containers;
     });
 
+    const log = inject<(obj: LogObject) => void>("log");
+
+    const send = () => {
+      dialogVisible.value = false;
+      if (log && props.cam) {
+        log({
+          timestamp: Date.now(),
+          message: "Данные отправлены",
+          cam: props.cam,
+        });
+      }
+    };
+
     return {
       getImgById,
       containersData,
       carsData,
+      dialogVisible,
+      send,
     };
   },
 });

@@ -50,7 +50,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, inject, onMounted, ref, watch } from "vue";
+import { computed, defineComponent, onMounted, provide, ref, watch } from "vue";
 import KMap from "@/components/KMap.vue";
 import camsJson from "@/data/cams.json";
 import { Camera, LogObject, ViewType } from "@/types";
@@ -181,7 +181,7 @@ export default defineComponent({
       logs.value.unshift(obj);
     };
 
-    inject("log", log);
+    provide("log", log);
 
     return {
       isLoaded,
