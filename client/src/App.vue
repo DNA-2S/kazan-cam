@@ -5,11 +5,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, onMounted } from "vue";
 
 export default defineComponent({
   name: "App",
-  // setup() {},
+  setup() {
+    onMounted(() => {
+      fetch("/api/camera")
+        .then((res) => res.json())
+        .then((res) => console.log(res));
+    });
+  },
 });
 </script>
 
