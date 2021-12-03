@@ -145,6 +145,7 @@ export default defineComponent({
 
     const containersData = computed<ContainerData[]>(() => {
       let containers = [] as ContainerData[];
+      console.log(props.cam);
       let localData = props.cam?.containers || [];
       for (let i = 0; i < localData.length; i++) {
         containers.push({

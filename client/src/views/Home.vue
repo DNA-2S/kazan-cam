@@ -91,7 +91,7 @@ export default defineComponent({
       () => route.query,
       (value) => {
         if (value["camId"]) {
-          detailsCam.value = camById(parseInt(value["camId"][0] || ""));
+          detailsCam.value = camById(parseInt(value["camId"] + ""));
 
           log({
             timestamp: Date.now(),
@@ -105,10 +105,9 @@ export default defineComponent({
     onMounted(() => {
       if (route.query["camId"]) {
         setTimeout(
-          (camId: string) =>
-            (detailsCam.value = camById(parseInt(camId || ""))),
+          (camId: string) => (detailsCam.value = camById(parseInt(camId))),
           500,
-          route.query["camId"][0]
+          route.query["camId"] + ""
         );
       }
 
