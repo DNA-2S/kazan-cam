@@ -50,15 +50,18 @@ docker run -d -p 6379:6379 --name realtime-redis redis
 docker run -d -p 9000:9000 --name realtime-backend kazan-cam-backend 
 ```
 
-Эндпоинты:
+###Эндпоинты
+
+Сваггер находится тут: https://app.swaggerhub.com/apis/stepan14041999/kazan-cam/1.0.0#/
+
+Также имеется файл server/kazan-cam-1.0.0-swagger.yaml для локальной загрузки
 
 Базовый URL (Для локального окружения): http://localhost:9000
 
-/api/camera - Получение информации по камерам (Город, улица, ID)
-
-/api/camera/{id}/image - Получение замоканного изображения с камеры
-
-/api/cabera/{id}/trash - Получение результата нейросети о состоянии мусорных корзин на изображении с камеры
+Список:
+- /api/camera - Получение информации по камерам (Город, улица, ID)
+- /api/camera/{id}/image - Получение замоканного изображения с камеры
+- /api/cabera/{id}/trash - Получение результата нейросети о состоянии мусорных корзин на изображении с камеры
 
 ***
 

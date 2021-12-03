@@ -1,0 +1,107 @@
+openapi: 3.0.0
+info:
+  description: "Сервис для работы с камерами по Казани."
+  version: "1.0.0"
+  title: Зилант
+servers:
+  - url: 'https://kazan-cam.herokuapp.com/api'
+  - url: 'http://localhost:9000/api'
+tags:
+  - name: Камеры
+    description: Получение информации о камерах
+paths:
+  /camera:
+    get:
+      tags:
+        - Камеры
+      summary: Получение списка камер
+      operationId: getCameraList
+      responses:
+        '200':
+          description: Успешная операция
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Camera'
+  /camera/{cameraId}/image:
+    get:
+      tags:
+        - Камеры
+      summary: Получение изображения с камеры (Замокано)
+      operationId: getCameraImage
+      parameters:
+        - name: cameraId
+          in: path
+          description: ID Камеры
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CameraImage'
+        '404':
+          description: Камера не найдена
+  /camera/{cameraId}/trash:
+    get:
+      tags:
+        - Камеры
+      summary: Получение количества заполненных корзин с мусором
+      operationId: getCameraTrashStatus
+      parameters:
+        - name: cameraId
+          in: path
+          description: ID Камеры
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CameraTrashInfo'
+        '404':
+          description: Камера не найдена
+components:
+  schemas:
+    Camera:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        address:
+          type: string
+        city:
+          type: string
+        name:
+          type: string
+          description: "Визуальное представление"
+    CameraImage:
+      type: object
+      properties:
+        image:
+          type: string
+          description: "В формате BASE64"
+    CameraTrashInfo:
+      type: object
+      properties:
+        filledContainers:
+          type: integer
+          description: "Текущее количество заполненных корзин"
+        totalContainers:
+          type: integer
+          description: "Всего зафиксированных на снимке корзин"
