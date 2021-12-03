@@ -105,13 +105,25 @@ export default defineComponent({
       const r = random.create();
 
       cams.value = (camsJson as Camera[]).map((item) => {
-        const value = r.range(100) / 100;
+        let value = r.range(100) / 100;
 
-        log({
-          timestamp: Date.now(),
-          message: "Пробное сообщение в лог",
-          cam: item,
-        });
+        if (item.dumpster) {
+          let length = (item.containers || []).length;
+          let filled = (item.containers || []).filter((item) => item).length;
+          if (length === 0 || filled === 0) {
+            value = 0;
+          } else {
+            value = filled / length;
+          }
+
+          if (value >= 0.5) {
+            log({
+              timestamp: Date.now(),
+              message: "Уровень заполненности мусорки превышает 50%",
+              cam: item,
+            });
+          }
+        }
 
         return {
           ...item,
@@ -156,7 +168,7 @@ export default defineComponent({
     };
 
     const log = (obj: LogObject): void => {
-      logs.value.push(obj);
+      logs.value.unshift(obj);
     };
 
     inject("log", log);
