@@ -68,7 +68,8 @@ app = web.Application([
 ])
 
 def create_app():
-    app.listen(9000)
+    port = int(os.environ.get('PORT', 9000))
+    app.listen(port)
     ioloop.IOLoop.instance().start()
 
 if __name__ == '__main__':
