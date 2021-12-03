@@ -6,7 +6,7 @@ export interface Camera {
 }
 
 export enum ViewType {
-  dumpster,
-  ["parking-area"],
-  cams
+  DUMPSTER,
+  "PARKING-AREA",
+  CAMS,
 }

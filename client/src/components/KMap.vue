@@ -1,18 +1,24 @@
 <template>
   <div id="map" class="q-map"></div>
   <template :key="cam.id" v-for="cam in cams">
-    <k-garbage-icon :id="cam.id" v-if="text === '0'"></k-garbage-icon>
-    <k-camera-icon :id="cam.id" v-else-if="text === '1'"></k-camera-icon>
-    <k-car-icon :id="cam.id" v-else-if="text === '2'"></k-car-icon>
+    <k-garbage-icon
+      :id="cam.id"
+      v-if="viewType === ViewType.DUMPSTER"
+    ></k-garbage-icon>
+    <k-camera-icon
+      :id="cam.id"
+      v-else-if="viewType === ViewType.CAMS"
+    ></k-camera-icon>
+    <k-car-icon
+      :id="cam.id"
+      v-else-if="viewType === ViewType['PARKING-AREA']"
+    ></k-car-icon>
   </template>
-  <div class="test">
-    <input v-model="text" type="text" />
-  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType, ref } from "vue";
-import { Camera } from "@/types";
+import { Camera, ViewType } from "@/types";
 import KGarbageIcon from "@/components/KGarbageIcon.vue";
 import KCameraIcon from "@/components/KCameraIcon.vue";
 import KCarIcon from "@/components/KCarIcon.vue";
@@ -26,11 +32,14 @@ export default defineComponent({
       type: Object as PropType<Camera[]>,
       required: true,
     },
+    viewType: {
+      type: Number,
+      default: ViewType.CAMS,
+    },
   },
   setup(props, { emit }) {
     const ymaps = (window as any).ymaps;
     let myMap: any = null;
-    const text = ref("1");
 
     const init = function () {
       myMap = new ymaps.Map(
@@ -94,7 +103,7 @@ export default defineComponent({
     ymaps.ready(init);
 
     return {
-      text,
+      ViewType,
     };
   },
 });
@@ -104,11 +113,5 @@ export default defineComponent({
 .q-map {
   width: 100%;
   height: 100%;
-}
-
-.test {
-  position: absolute;
-  top: 100px;
-  left: 100px;
 }
 </style>
