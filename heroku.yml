@@ -1,7 +1,7 @@
 setup:
   addons:
     - plan: heroku-redis
-      as: CACHE
+      as: REDIS
 build:
   docker:
     frontend: client/Dockerfile
