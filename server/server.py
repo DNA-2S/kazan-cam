@@ -56,15 +56,21 @@ class CameraImageRequestHandler(web.RequestHandler):
 
     def get(self, cam_id):
         mocked_camera_image_file = f"mock/cams/{cam_id}.jpg"
-        image = open(mocked_camera_image_file, 'rb')
-        image_read = image.read()
-        image_64_encode = base64.b64encode(image_read)
 
-        returned_data = {
-            "image": image_64_encode.decode("utf-8")
-        }
+        try:
+            image = open(mocked_camera_image_file, 'rb')
+            image_read = image.read()
+            image_64_encode = base64.b64encode(image_read)
 
-        self.write(returned_data)
+            returned_data = {
+                "image": image_64_encode.decode("utf-8")
+            }
+
+            self.write(returned_data)
+        except OSError as error:
+            print(error)
+            self.set_status(404)
+            self.finish("<html><body>404: Камера не найдена</body></html>")
 
 
 class CameraTrashInfoRequestHandler(web.RequestHandler):
@@ -79,14 +85,21 @@ class CameraTrashInfoRequestHandler(web.RequestHandler):
         with open('mock/camera_info.json', encoding='utf-8') as f:
             mocked_camera_info_list = json.load(f)
 
+        camera_found = False
+
         for camera_info in mocked_camera_info_list:
             if camera_info['id'] == int(cam_id):
+                camera_found = True
                 returned_data = {
                     "filledContainers": camera_info['containers'].count(True),
                     "totalContainers": len(camera_info['containers'])
                 }
 
                 self.write(returned_data)
+
+        if camera_found is not True:
+            self.set_status(404)
+            self.finish("<html><body>404: Камера не найдена</body></html>")
 
 
 class SocketHandler(websocket.WebSocketHandler):
