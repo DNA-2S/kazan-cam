@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref } from "vue";
+import { defineComponent, PropType, ref } from "vue";
 import { LogObject } from "@/types";
 import moment from "moment";
 
@@ -110,7 +110,7 @@ export default defineComponent({
   &__container {
     margin-top: 30px;
     padding: 10px;
-    width: 100%;
+    width: calc(100% - 20px);
     height: auto;
     transition: 250ms;
 
