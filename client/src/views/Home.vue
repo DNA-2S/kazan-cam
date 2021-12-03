@@ -105,7 +105,7 @@ export default defineComponent({
       const r = random.create();
 
       cams.value = (camsJson as Camera[]).map((item) => {
-        let value = r.range(100) / 100;
+        let value = 0;
 
         if (item.dumpster) {
           let length = (item.containers || []).length;
@@ -123,6 +123,10 @@ export default defineComponent({
               cam: item,
             });
           }
+        }
+
+        if (item["parking-area"]) {
+          value = r.range(30) / 100;
         }
 
         return {
