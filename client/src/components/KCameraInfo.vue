@@ -142,10 +142,6 @@ export default defineComponent({
         });
     });
 
-    const getImgById = (id: number) => {
-      return require(`../assets/cams/${id}.jpg`);
-    };
-
     const containersData = computed<ContainerData[]>(() => {
       let containers = [] as ContainerData[];
       let localData = props.cam?.containers || [];
@@ -187,7 +183,6 @@ export default defineComponent({
     };
 
     return {
-      getImgById,
       containersData,
       carsData,
       dialogVisible,
