@@ -14,7 +14,9 @@
         :src="`data:image/jpg;base64,${image}`"
         class="k-camera-info__img"
         alt="Cam"
+        v-if="image !== ''"
       />
+      <div v-else>Loading...</div>
     </div>
     <div class="k-camera-info__container-wrapper">
       <div class="k-camera-info__container">
@@ -123,6 +125,7 @@ export default defineComponent({
     watch(
       () => props.cam,
       (value: Camera) => {
+        image.value = "";
         fetch(`/api/camera/${value.id}/image`)
           .then((res) => res.json())
           .then((res: { image: string }) => {
@@ -138,10 +141,6 @@ export default defineComponent({
           image.value = res.image;
         });
     });
-
-    const getImgById = (id: number) => {
-      return require(`../assets/cams/${id}.jpg`);
-    };
 
     const containersData = computed<ContainerData[]>(() => {
       let containers = [] as ContainerData[];
@@ -184,7 +183,6 @@ export default defineComponent({
     };
 
     return {
-      getImgById,
       containersData,
       carsData,
       dialogVisible,
